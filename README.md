@@ -2,7 +2,7 @@
 
 A React dashboard prototype that turns customer account signals into a simple risk view and a suggested follow-up action. I built it to explore how customer success teams can spot accounts that may need attention and prioritize proactive outreach.
 
-**Live demo:** Deployment is being set up with GitHub Pages.
+**Live demo:** [Open the Customer Success Risk Dashboard](https://jennah-ittech.github.io/customer-success-risk-dashboard/)
 
 > **Demo data:** The account names, owners, scores, ticket counts, and renewal dates shown in this project are fictional sample data. They do not represent real customers or measured business outcomes.
 
