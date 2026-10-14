@@ -1,16 +1,51 @@
-# React + Vite
+# Customer Success Risk Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based customer health dashboard designed to help account teams prioritize interventions based on product usage, support pressure, and overall account health.
 
-Currently, two official plugins are available:
+## Why this project matters
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This project demonstrates how to translate operational signals into a decision-support interface for customer success teams. It is built to surface the accounts most likely to churn or require intervention, while keeping the experience simple enough for leadership and customer success managers to act on quickly.
 
-## React Compiler
+## What is included
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Risk scoring across multiple account health signals
+- Portfolio filtering by account severity
+- Detailed account drill-down view with recommended action
+- Trend visualization for health and adoption over time
+- Data layer that supports JSON-backed inputs with graceful local fallback
+- Modular component structure for maintainability and expansion
 
-## Expanding the ESLint configuration
+## Tech stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React
+- Vite
+- GitHub Pages deployment workflow
+- CSS for dashboard styling and responsiveness
+
+## Local development
+
+```bash
+npm install
+npm run dev
+```
+
+## Production build
+
+```bash
+npm run build
+```
+
+## Deployment
+
+This project is configured for GitHub Pages deployment through the workflow in `.github/workflows/deploy.yml`.
+
+## Data model
+
+The dashboard uses a structured customer record model with the following key signals:
+
+- health score
+- product usage
+- open support tickets
+- renewal window
+- account owner
+- sentiment / risk category

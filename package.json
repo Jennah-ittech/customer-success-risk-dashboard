@@ -1,5 +1,6 @@
 {
-  "name": "customer-success-risk-dashboardcustomer-success-risk-dashboard",
+  "name": "customer-success-risk-dashboard",
+  "description": "Customer Success Risk Dashboard built with React and Vite to monitor account health, product adoption, support load, and renewal risk.",
   "private": true,
   "version": "0.0.0",
   "type": "module",

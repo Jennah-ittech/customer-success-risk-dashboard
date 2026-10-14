@@ -1,99 +1,124 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-
-const customers = [
-  { name: 'Northstar Health', owner: 'Maya Chen', health: 42, usage: 38, tickets: 7, renewal: 'Sep 28' },
-  { name: 'BrightPath Retail', owner: 'Andre Lewis', health: 64, usage: 72, tickets: 3, renewal: 'Oct 12' },
-  { name: 'Summit Logistics', owner: 'Jordan Patel', health: 86, usage: 91, tickets: 1, renewal: 'Nov 04' },
-  { name: 'Willow & Co.', owner: 'Sam Rivera', health: 53, usage: 49, tickets: 5, renewal: 'Oct 03' },
-]
-
-function getRisk(customer) {
-  if (customer.health < 50 || customer.usage < 45 || customer.tickets >= 6) return 'High'
-  if (customer.health < 70 || customer.usage < 70 || customer.tickets >= 4) return 'Medium'
-  return 'Low'
-}
+import { AccountList } from './components/AccountList'
+import { DetailPanel } from './components/DetailPanel'
+import { MetricCard } from './components/MetricCard'
+import { TrendChart } from './components/TrendChart'
+import { getRisk, summarizeCustomers } from './data/customerData'
+import { fetchCustomerData } from './services/customerData'
 
 function App() {
+  const [customers, setCustomers] = useState([])
+  const [portfolioTrend, setPortfolioTrend] = useState([])
   const [filter, setFilter] = useState('All')
-  const [selectedCustomer, setSelectedCustomer] = useState(customers[0].name)
+  const [selectedCustomerId, setSelectedCustomerId] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    let active = true
+
+    fetchCustomerData()
+      .then(({ customers: nextCustomers, portfolioTrend: nextTrend }) => {
+        if (!active) return
+
+        setCustomers(nextCustomers)
+        setPortfolioTrend(nextTrend)
+        setSelectedCustomerId((currentId) => currentId || nextCustomers[0]?.id || '')
+      })
+      .finally(() => {
+        if (active) {
+          setIsLoading(false)
+        }
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
 
   const visibleCustomers = useMemo(
-    () => customers.filter((customer) => filter === 'All' || getRisk(customer) === filter),
-    [filter],
+    () =>
+      customers.filter(
+        (customer) => filter === 'All' || getRisk(customer).label === filter,
+      ),
+    [customers, filter],
   )
 
-  const selected = customers.find((customer) => customer.name === selectedCustomer)
-  const risk = getRisk(selected)
-  const highRiskCount = customers.filter((customer) => getRisk(customer) === 'High').length
+  const selectedCustomer = useMemo(() => {
+    if (!visibleCustomers.length) {
+      return null
+    }
+
+    return customers.find((customer) => customer.id === selectedCustomerId) ?? visibleCustomers[0]
+  }, [customers, selectedCustomerId, visibleCustomers])
+
+  const summary = useMemo(() => summarizeCustomers(customers), [customers])
+
+  if (isLoading) {
+    return (
+      <main className="dashboard-shell">
+        <div className="loading-state">Loading portfolio data…</div>
+      </main>
+    )
+  }
 
   return (
-    <main>
-      <section className="hero">
+    <main className="dashboard-shell">
+      <header className="page-header">
         <div>
-          <p className="eyebrow">AUTOMATION DEMO</p>
+          <p className="eyebrow">OPERATIONS OVERVIEW</p>
           <h1>Customer Success Risk Dashboard</h1>
-          <p className="subtitle">Turn account signals into clear, proactive next steps.</p>
-        </div>
-        <div className="score-card">
-          <span>Accounts needing attention</span>
-          <strong>{highRiskCount}</strong>
-        </div>
-      </section>
-
-      <section className="metrics">
-        <div><span>Accounts monitored</span><strong>{customers.length}</strong></div>
-        <div><span>Average health score</span><strong>61</strong></div>
-        <div><span>Open support tickets</span><strong>16</strong></div>
-      </section>
-
-      <section className="dashboard">
-        <div className="account-list">
-          <div className="section-heading">
-            <h2>Account signals</h2>
-            <div className="filters">
-              {['All', 'High', 'Medium', 'Low'].map((item) => (
-                <button
-                  className={filter === item ? 'active' : ''}
-                  key={item}
-                  onClick={() => setFilter(item)}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {visibleCustomers.map((customer) => {
-            const customerRisk = getRisk(customer)
-            return (
-              <button
-                className={`account-row ${selectedCustomer === customer.name ? 'selected' : ''}`}
-                key={customer.name}
-                onClick={() => setSelectedCustomer(customer.name)}
-              >
-                <span>
-                  <strong>{customer.name}</strong>
-                  <small>{customer.owner} · Renews {customer.renewal}</small>
-                </span>
-                <span className={`badge ${customerRisk.toLowerCase()}`}>{customerRisk} risk</span>
-              </button>
-            )
-          })}
-        </div>
-
-        <aside className="recommendation">
-          <p className="eyebrow">RECOMMENDED NEXT STEP</p>
-          <h2>{selected.name}</h2>
-          <span className={`badge ${risk.toLowerCase()}`}>{risk} risk</span>
-          <p>
-            Health is {selected.health}% with {selected.usage}% product usage and {selected.tickets} open support tickets.
+          <p className="subtitle">
+            Prioritize at-risk accounts and focus interventions where retention signal is strongest.
           </p>
-          <div className="action-box">
-            <strong>{risk === 'High' ? 'Schedule a recovery call within 48 hours.' : 'Send a proactive check-in and adoption resource.'}</strong>
-            <span>Suggested by account-signal automation</span>
-          </div>
-        </aside>
+        </div>
+
+        <div className="header-actions">
+          <button type="button" className="secondary-button">
+            Export
+          </button>
+          <button type="button" className="primary-button">
+            Review risk queue
+          </button>
+        </div>
+      </header>
+
+      <section className="metrics" aria-label="dashboard summary metrics">
+        <MetricCard
+          label="Accounts monitored"
+          value={summary.totalAccounts}
+          note="Across major revenue accounts"
+        />
+        <MetricCard
+          label="Average health"
+          value={summary.averageHealth}
+          note="Composite health score"
+        />
+        <MetricCard
+          label="At-risk accounts"
+          value={summary.highRiskCount}
+          note="Need immediate action"
+        />
+        <MetricCard
+          label="Open tickets"
+          value={summary.openTickets}
+          note="Support load this week"
+          accent
+        />
+      </section>
+
+      <TrendChart data={portfolioTrend} />
+
+      <section className="content-grid">
+        <AccountList
+          customers={visibleCustomers}
+          filter={filter}
+          selectedCustomer={selectedCustomer?.id ?? ''}
+          onFilterChange={setFilter}
+          onSelectCustomer={setSelectedCustomerId}
+        />
+
+        <DetailPanel customer={selectedCustomer} />
       </section>
     </main>
   )
