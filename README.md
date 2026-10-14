@@ -1,51 +1,57 @@
 # Customer Success Risk Dashboard
 
-A React-based customer health dashboard designed to help account teams prioritize interventions based on product usage, support pressure, and overall account health.
+A React dashboard prototype that turns customer account signals into a simple risk view and a suggested follow-up action. I built it to explore how customer success teams can spot accounts that may need attention and prioritize proactive outreach.
 
-## Why this project matters
+**Live demo:** [Open the Customer Success Risk Dashboard](https://jennah-ittech.github.io/customer-success-risk-dashboard/)
 
-This project demonstrates how to translate operational signals into a decision-support interface for customer success teams. It is built to surface the accounts most likely to churn or require intervention, while keeping the experience simple enough for leadership and customer success managers to act on quickly.
+> **Demo data:** The account names, owners, scores, ticket counts, and renewal dates shown in this project are fictional sample data. They do not represent real customers or measured business outcomes.
 
-## What is included
+## What it does
 
-- Risk scoring across multiple account health signals
-- Portfolio filtering by account severity
-- Detailed account drill-down view with recommended action
-- Trend visualization for health and adoption over time
-- Data layer that supports JSON-backed inputs with graceful local fallback
-- Modular component structure for maintainability and expansion
+- Displays a small portfolio of customer accounts with health, product usage, support ticket, and renewal signals.
+- Assigns each account a High, Medium, or Low risk label using transparent threshold rules.
+- Filters the account list by risk level and updates the selected account details.
+- Shows a suggested next step based on the account's risk category.
 
-## Tech stack
+The risk labels and follow-up suggestions are rule-based demo logic. This project does not currently use AI, connect to a CRM, or load live customer data.
+
+## Built with
 
 - React
+- JavaScript
 - Vite
-- GitHub Pages deployment workflow
-- CSS for dashboard styling and responsiveness
+- CSS
 
-## Local development
+## Run locally
+
+Requirements: Node.js and npm.
 
 ```bash
+git clone https://github.com/Jennah-ittech/customer-success-risk-dashboard.git
+cd customer-success-risk-dashboard
 npm install
 npm run dev
 ```
 
-## Production build
+Open the local URL printed by Vite in your browser.
+To create a production build:
 
 ```bash
 npm run build
 ```
 
-## Deployment
+## Project status
 
-This project is configured for GitHub Pages deployment through the workflow in `.github/workflows/deploy.yml`.
+This is a front-end portfolio prototype using in-code sample data. It is intended to demonstrate interface development, interactive filtering, and a straightforward approach to translating business signals into follow-up priorities. It is not a production customer-management system.
 
-## Data model
+## Ideas for future improvements
 
-The dashboard uses a structured customer record model with the following key signals:
+- Add tests for risk classification and filtering.
+- Make the risk thresholds configurable and explain each account's risk factors.
+- Add accessible charts and responsive layouts for mobile screens.
+- Add a documented data import path using safe, synthetic data.
+- Explore persistence and a backend only after defining privacy and security requirements.
 
-- health score
-- product usage
-- open support tickets
-- renewal window
-- account owner
-- sentiment / risk category
+## Author
+
+Created by [Jennah Higgins](https://github.com/Jennah-ittech), a DeVry University student interested in practical business technology and customer-focused problem-solving.
