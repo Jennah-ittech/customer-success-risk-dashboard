@@ -1,6 +1,6 @@
 {
-  "name": "customer-success-risk-dashboard",
-  "description": "Customer Success Risk Dashboard built with React and Vite to monitor account health, product adoption, support load, and renewal risk.",
+  "name": "groundwork-vendor-compliance-demo",
+  "description": "A React and Vite demo for tracking subcontractor compliance documents and mobilization readiness.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
